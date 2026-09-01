@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>纹曜 WENYAO · 五纹入器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Noto+Sans+SC:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --lacquer:#0b0a08;
+    --lacquer-2:#151210;
+    --lacquer-3:#1c1815;
+    --gold:#b8933f;
+    --gold-soft:#e3c98a;
+    --gold-dim:#8a723f;
+    --parchment:#e8e0d0;
+    --parchment-dim:#a89e8c;
+    --line: rgba(184,147,63,0.28);
+    --accent:#b8933f;
+    --accent-2:#8a723f;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--lacquer);
+    color:var(--parchment);
+    font-family:'Noto Sans SC','Noto Serif SC',serif;
+    font-weight:300;
+    overflow-x:hidden;
+    line-height:1.7;
+  }
+
+  ::selection{background:var(--gold-dim);color:#0b0a08;}
+
+  h1,h2,h3,.serif{
+    font-family:'Noto Serif SC',serif;
+  }
+
+  .lat{
+    font-family:'Cormorant Garamond', serif;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+  }
+
+  a{color:inherit;text-decoration:none;}
+
+  img{display:block;max-width:100%;}
+
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  /* ---------- ambient lacquer texture ---------- */
+  .lacquer-bg{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 15%, rgba(184,147,63,0.05), transparent 60%),
+      radial-gradient(ellipse 50% 35% at 85% 70%, rgba(184,147,63,0.045), transparent 60%),
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(80,50,30,0.10), transparent 70%),
+      var(--lacquer);
+  }
+  .grain{
+    position:fixed; inset:0; z-index:-1; pointer-events:none;
+    opacity:0.035; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- nav ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    padding:22px 0;
+    transition:background .5s ease, padding .5s ease, border-color .5s ease;
+    border-bottom:1px solid transparent;
+  }
+  header.solid{
+    background:rgba(11,10,8,0.88);
+    backdrop-filter:blur(10px);
+    padding:14px 0;
+    border-color:var(--line);
+  }
+  header .wrap{display:flex;align-items:center;justify-content:space-between;}
+  .brandmark{
+    font-family:'Noto Serif SC',serif;
+    font-weight:900;
+    font-size:22px;
+    letter-spacing:0.12em;
+    color:var(--gold-soft);
+  }
+  nav.primary{display:flex;gap:36px;}
+  nav.primary a{
+    font-size:14px;
+    letter-spacing:0.12em;
+    color:var(--parchment-dim);
+    position:relative;
+    padding-bottom:4px;
+    transition:color .3s ease;
+    white-space:nowrap;
+  }
+  nav.primary a::after{
+    content:'';
+    position:absolute; left:0; bottom:0;
+    width:0; height:1px;
+    background:var(--accent);
+    transition:width .35s ease, background .3s ease;
+  }
+  nav.primary a:hover{color:var(--parchment);}
+  nav.primary a:hover::after{width:100%;}
+  .nav-toggle{display:none;}
+
+  /* ---------- hero ---------- */
+  #hero{
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    position:relative;
+    padding:140px 24px 80px;
+  }
+
+  .compass{
+    position:relative;
+    width:min(58vw, 460px);
+    height:min(58vw, 460px);
+    margin-bottom:8px;
+  }
+  .compass-ring{
+    position:absolute; inset:0;
+    border-radius:50%;
+    border:1px solid var(--line);
+    animation:spin 120s linear infinite;
+  }
+  .compass-ring::before{
+    content:'';
+    position:absolute; inset:14%;
+    border-radius:50%;
+    border:1px solid rgba(184,147,63,0.14);
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .compass-core{
+    position:absolute; left:50%; top:50%;
+    width:118px; height:118px;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    border:1px solid var(--gold-dim);
+    display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(circle, rgba(184,147,63,0.08), transparent 70%);
+  }
+  .compass-core span{
+    font-family:'Noto Serif SC',serif;
+    font-weight:900;
+    font-size:30px;
+    color:var(--gold-soft);
+    letter-spacing:0.05em;
+  }
+  .compass-core .glow{
+    position:absolute; inset:-1px; border-radius:50%;
+    box-shadow:0 0 40px 6px rgba(184,147,63,0.18);
+    animation:pulse 4.5s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:.5;}
+    50%{opacity:1;}
+  }
+
+  .node{
+    position:absolute;
+    width:64px; height:64px;
+    top:50%; left:50%;
+    margin:-32px 0 0 -32px;
+    transform-origin:center;
+  }
+  .node-btn{
+    width:100%; height:100%;
+    border-radius:50%;
+    background:var(--lacquer-2);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    animation:counter-spin 120s linear infinite;
+    transition:border-color .3s ease, transform .3s ease, background .3s ease;
+  }
+  .node-btn span{
+    font-family:'Noto Serif SC',serif;
+    font-weight:600;
+    font-size:19px;
+    color:var(--node-color, var(--gold-soft));
+  }
+  .node-btn:hover{
+    border-color:var(--node-color, var(--gold));
+    transform:scale(1.14);
+    background:var(--lacquer-3);
+  }
+  @keyframes counter-spin{ to{ transform:rotate(-360deg); } }
+
+  .compass:hover .compass-ring,
+  .compass:hover .node-btn{ animation-play-state:paused; }
+
+  .eyebrow{
+    font-family:'Cormorant Garamond', serif;
+    letter-spacing:0.42em;
+    text-transform:uppercase;
+    font-size:13px;
+    color:var(--gold);
+    margin-bottom:18px;
+  }
+  #hero h1{
+    font-size:clamp(46px, 8vw, 88px);
+    font-weight:900;
+    letter-spacing:0.06em;
+    color:var(--parchment);
+    line-height:1;
+    margin-top:10px;
+  }
+  #hero .sub{
+    margin-top:20px;
+    font-size:clamp(16px, 2vw, 20px);
+    color:var(--gold-soft);
+    letter-spacing:0.08em;
+    font-weight:400;
+  }
+  #hero p.lede{
+    max-width:560px;
+    margin:26px auto 0;
+    color:var(--parchment-dim);
+    font-size:15px;
+    font-weight:300;
+    line-height:1.9;
+  }
+  .cta-row{
+    display:flex; gap:18px; margin-top:42px; flex-wrap:wrap; justify-content:center;
+  }
+  .btn{
+    display:inline-block;
+    padding:14px 34px;
+    font-size:14px;
+    letter-spacing:0.14em;
+    border:1px solid var(--gold-dim);
+    border-radius:2px;
+    transition:all .35s ease;
+    cursor:pointer;
+    background:transparent;
+  }
+  .btn.solid{
+    background:var(--gold);
+    color:var(--lacquer);
+    border-color:var(--gold);
+  }
+  .btn.solid:hover{ background:var(--gold-soft); border-color:var(--gold-soft); }
+  .btn.ghost{ color:var(--parchment); }
+  .btn.ghost:hover{ border-color:var(--gold); color:var(--gold-soft); }
+
+  .scroll-cue{
+    position:absolute; bottom:34px; left:50%; transform:translateX(-50%);
+    width:1px; height:52px;
+    background:linear-gradient(var(--gold-dim), transparent);
+  }
+  .scroll-cue::after{
+    content:''; position:absolute; left:-2.5px; top:0;
+    width:6px; height:6px; border-radius:50%;
+    background:var(--gold-soft);
+    animation:drip 2.6s ease-in-out infinite;
+  }
+  @keyframes drip{
+    0%{ top:0; opacity:0; }
+    15%{ opacity:1; }
+    85%{ opacity:1; }
+    100%{ top:100%; opacity:0; }
+  }
+
+  /* ---------- reveal ---------- */
+  .reveal{
+    opacity:0;
+    transform:translateY(26px);
+    transition:opacity 1s cubic-bezier(.2,.7,.3,1), transform 1s cubic-bezier(.2,.7,.3,1);
+  }
+  .reveal.in-view{ opacity:1; transform:translateY(0); }
+
+  /* ---------- section shell ---------- */
+  section{ position:relative; padding:150px 0; }
+  .divider{
+    width:1px; height:70px; margin:0 auto;
+    background:linear-gradient(var(--line), transparent);
+  }
+  .hairline{
+    width:100%; height:1px;
+    background:var(--line);
+  }
+
+  /* ---------- story ---------- */
+  #story .story-grid{
+    display:grid;
+    grid-template-columns:0.9fr 1.1fr;
+    gap:80px;
+    align-items:start;
+  }
+  #story h2{
+    font-size:clamp(30px, 4vw, 44px);
+    font-weight:600;
+    color:var(--parchment);
+    line-height:1.4;
+  }
+  #story .col p{
+    color:var(--parchment-dim);
+    font-size:15.5px;
+    margin-bottom:20px;
+    font-weight:300;
+  }
+  #story .col p:last-child{margin-bottom:0;}
+
+  /* ---------- collections ---------- */
+  .collection{
+    padding:110px 0;
+    border-top:1px solid var(--line);
+  }
+  .collection .wrap{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:80px;
+    align-items:center;
+  }
+  .collection.flip .wrap{ direction:rtl; }
+  .collection.flip .wrap > *{ direction:ltr; }
+
+  .col-figure{
+    position:relative;
+    border-radius:2px;
+    overflow:hidden;
+    background:var(--lacquer-2);
+    border:1px solid var(--line);
+    aspect-ratio:1024/1000;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .col-figure img{
+    width:88%;
+    transition:transform 1.1s cubic-bezier(.2,.7,.3,1), filter .6s ease;
+    filter:saturate(0.94);
+  }
+  .col-figure:hover img{ transform:scale(1.055); filter:saturate(1.05); }
+  .col-figure::after{
+    content:'';
+    position:absolute; inset:0;
+    box-shadow:inset 0 0 60px 10px rgba(0,0,0,0.5);
+    pointer-events:none;
+  }
+  .figure-frame{
+    position:absolute; inset:14px;
+    border:1px solid var(--node-color, var(--line));
+    opacity:0.55;
+    pointer-events:none;
+  }
+
+  .col-text .eyebrow-row{
+    display:flex; align-items:baseline; gap:14px; margin-bottom:22px;
+  }
+  .glyph-badge{
+    width:46px; height:46px;
+    border-radius:50%;
+    border:1px solid var(--node-color, var(--gold-dim));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Noto Serif SC',serif;
+    font-weight:600;
+    font-size:18px;
+    color:var(--node-color, var(--gold-soft));
+    flex-shrink:0;
+  }
+  .col-text .names{
+    display:flex; flex-direction:column;
+  }
+  .col-text .cn-name{
+    font-size:15px; letter-spacing:0.1em; color:var(--parchment);
+  }
+  .col-text .en-name{
+    font-family:'Cormorant Garamond', serif;
+    font-size:12px; letter-spacing:0.3em; text-transform:uppercase;
+    color:var(--node-color, var(--gold));
+    margin-top:3px;
+  }
+  .col-text h3{
+    font-size:clamp(26px, 3.4vw, 36px);
+    font-weight:600;
+    color:var(--parchment);
+    margin-bottom:20px;
+    line-height:1.4;
+  }
+  .col-text p.desc{
+    color:var(--parchment-dim);
+    font-size:15px;
+    font-weight:300;
+    margin-bottom:26px;
+  }
+  .materials{
+    display:flex; flex-wrap:wrap; gap:10px 0;
+    font-size:13px; color:var(--parchment-dim);
+    letter-spacing:0.04em;
+    margin-bottom:30px;
+  }
+  .materials span{
+    padding:0 14px;
+    border-right:1px solid var(--line);
+  }
+  .materials span:first-child{padding-left:0;}
+  .materials span:last-child{border-right:none;}
+
+  .link-cta{
+    display:inline-flex; align-items:center; gap:10px;
+    font-size:13px; letter-spacing:0.14em;
+    color:var(--node-color, var(--gold-soft));
+    cursor:pointer;
+    position:relative;
+  }
+  .link-cta .arrow{ transition:transform .3s ease; }
+  .link-cta:hover .arrow{ transform:translateX(6px); }
+
+  /* ---------- atelier ---------- */
+  #atelier{
+    border-top:1px solid var(--line);
+    text-align:center;
+  }
+  #atelier h2{
+    font-size:clamp(30px,4vw,46px);
+    font-weight:600;
+    color:var(--parchment);
+    margin-bottom:22px;
+  }
+  #atelier p.lede{
+    max-width:520px; margin:0 auto 44px;
+    color:var(--parchment-dim);
+    font-size:15px;
+  }
+  .atelier-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:0;
+    max-width:820px;
+    margin:0 auto 46px;
+    border:1px solid var(--line);
+  }
+  .atelier-grid > div{
+    padding:30px 24px;
+    border-right:1px solid var(--line);
+  }
+  .atelier-grid > div:last-child{ border-right:none; }
+  .atelier-grid .label{
+    font-family:'Cormorant Garamond', serif;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    font-size:11px;
+    color:var(--gold);
+    margin-bottom:12px;
+  }
+  .atelier-grid .value{
+    font-size:14.5px;
+    color:var(--parchment);
+    font-weight:300;
+    line-height:1.8;
+  }
+
+  /* ---------- footer ---------- */
+  footer{
+    padding:60px 0 40px;
+    border-top:1px solid var(--line);
+  }
+  footer .foot-top{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    flex-wrap:wrap; gap:30px;
+    margin-bottom:50px;
+  }
+  footer .brandmark{ margin-bottom:10px; }
+  footer .tagline{
+    color:var(--parchment-dim); font-size:13.5px; max-width:280px;
+  }
+  footer .foot-cols{ display:flex; gap:70px; flex-wrap:wrap; }
+  footer .foot-col .label{
+    font-size:12px; letter-spacing:0.2em; color:var(--gold);
+    margin-bottom:14px;
+  }
+  footer .foot-col a, footer .foot-col span{
+    display:block; font-size:13.5px; color:var(--parchment-dim);
+    margin-bottom:10px; transition:color .3s ease;
+  }
+  footer .foot-col a:hover{ color:var(--gold-soft); }
+  footer .foot-bottom{
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:14px;
+    font-size:12px; color:var(--parchment-dim); opacity:0.7;
+    padding-top:26px; border-top:1px solid var(--line);
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:880px){
+    #story .story-grid{ grid-template-columns:1fr; gap:36px; }
+    .collection .wrap{ grid-template-columns:1fr; gap:40px; }
+    .collection.flip .wrap{ direction:ltr; }
+    .atelier-grid{ grid-template-columns:1fr; }
+    .atelier-grid > div{ border-right:none; border-bottom:1px solid var(--line); }
+    .atelier-grid > div:last-child{ border-bottom:none; }
+    nav.primary{
+      position:fixed; top:0; right:-100%; height:100svh; width:78%;
+      background:rgba(11,10,8,0.98);
+      flex-direction:column; justify-content:center; align-items:flex-start;
+      padding:40px; gap:26px;
+      transition:right .5s cubic-bezier(.2,.7,.3,1);
+      border-left:1px solid var(--line);
+    }
+    nav.primary.open{ right:0; }
+    nav.primary a{ font-size:16px; }
+    .nav-toggle{
+      display:flex; flex-direction:column; gap:5px; cursor:pointer;
+      z-index:200; background:none; border:none; padding:8px;
+    }
+    .nav-toggle span{ width:22px; height:1px; background:var(--parchment); display:block; }
+  }
+  @media (max-width:520px){
+    section{ padding:100px 0; }
+    .collection{ padding:80px 0; }
+    .wrap{ padding:0 22px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="lacquer-bg"></div>
+<div class="grain"></div>
+
+<header id="siteHeader">
+  <div class="wrap">
+    <a href="#hero" class="brandmark">纹曜</a>
+    <button class="nav-toggle" id="navToggle" aria-label="菜单"><span></span><span></span><span></span></button>
+    <nav class="primary" id="primaryNav">
+      <a href="#collections">五纹</a>
+      <a href="#story">造物</a>
+      <a href="#atelier">藏廊</a>
+      <a href="#contact">联系</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section id="hero">
+  <div class="compass" role="group" aria-label="五纹罗盘导航">
+    <div class="compass-ring"></div>
+
+    <div class="node" style="--deg:0deg; transform:rotate(0deg) translateY(-160px);">
+      <button class="node-btn" style="--node-color:#c1512f" onclick="goTo('yan')"><span>焱</span></button>
+    </div>
+    <div class="node" style="transform:rotate(72deg) translateY(-160px);">
+      <button class="node-btn" style="--node-color:#9fbfa0" onclick="goTo('jing')"><span>净</span></button>
+    </div>
+    <div class="node" style="transform:rotate(144deg) translateY(-160px);">
+      <button class="node-btn" style="--node-color:#e2a9a0" onclick="goTo('fang')"><span>芳</span></button>
+    </div>
+    <div class="node" style="transform:rotate(216deg) translateY(-160px);">
+      <button class="node-btn" style="--node-color:#8fb6dd" onclick="goTo('ning')"><span>凝</span></button>
+    </div>
+    <div class="node" style="transform:rotate(288deg) translateY(-160px);">
+      <button class="node-btn" style="--node-color:#5fa695" onclick="goTo('zhui')"><span>缀</span></button>
+    </div>
+
+    <div class="compass-core">
+      <div class="glow"></div>
+      <span>纹曜</span>
+    </div>
+  </div>
+
+  <div class="eyebrow lat">Maison Wenyao</div>
+  <p class="sub">五纹入器，光影成曜</p>
+  <p class="lede">纹曜自中国历代纹样中撷取五种性格——火焰之烈、莲花之净、茶花之芳、冰晶之凝、缨络之缀——铸于金石之间，成为可佩戴的造物。</p>
+
+  <div class="cta-row">
+    <a class="btn solid" href="#collections">探索五纹</a>
+    <a class="btn ghost" href="#atelier">预约拜访</a>
+  </div>
+
+  <div class="scroll-cue"></div>
+</section>
+
+<!-- ================= STORY ================= -->
+<section id="story">
+  <div class="wrap">
+    <div class="story-grid">
+      <div class="col reveal">
+        <div class="eyebrow lat">The Making · 造物</div>
+        <h2>纹样，<br>是器物的记忆</h2>
+      </div>
+      <div class="col reveal">
+        <p>在藻井、织锦、瓷釉与佛前璎珞之间，纹样承载着历代匠人对自然与信仰的理解。纹曜的工坊从这些图样出发，不复刻其形，而提炼其性——每一种纹样对应一种材质语言、一种佩戴时的姿态。</p>
+        <p>五位驻店设计师各领一纹，历时三年，将纹样的走势转译为金属的锻造轨迹，让平面图案获得可触摸的重量。这不是对传统的复述，而是一次重新铸造。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="hairline"></div></div>
+
+<!-- ================= COLLECTIONS ================= -->
+<div id="collections">
+
+  <section class="collection" id="yan" data-accent="#c1512f">
+    <div class="wrap">
+      <div class="col-figure reveal">
+        <div class="figure-frame" style="--node-color:#c1512f"></div>
+        <img src="assets/huoyan.png" alt="火焰纹 纹样图案" loading="lazy">
+      </div>
+      <div class="col-text reveal">
+        <div class="eyebrow-row">
+          <div class="glyph-badge" style="--node-color:#c1512f">焱</div>
+          <div class="names">
+            <span class="cn-name">火焰纹 · 焱</span>
+            <span class="en-name">Yàn · Flame</span>
+          </div>
+        </div>
+        <h3>淬于烈火，成于金</h3>
+        <p class="desc">火焰纹常见于历代藻井与造像背光，是能量与转化的象形。此系列以做旧金衬孔雀绿珐琅，中心嵌石榴石，如炉火将熄未熄的余烬，收着火性，也藏着克制。</p>
+        <div class="materials">
+          <span>18K 金</span><span>石榴石</span><span>孔雀绿珐琅</span>
+        </div>
+        <a class="link-cta" style="--node-color:#c1512f" onclick="goTo('contact')">预约鉴赏 <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="collection flip" id="jing" data-accent="#9fbfa0">
+    <div class="wrap">
+      <div class="col-figure reveal">
+        <div class="figure-frame" style="--node-color:#9fbfa0"></div>
+        <img src="assets/lianhua.png" alt="莲花纹 纹样图案" loading="lazy">
+      </div>
+      <div class="col-text reveal">
+        <div class="eyebrow-row">
+          <div class="glyph-badge" style="--node-color:#9fbfa0">净</div>
+          <div class="names">
+            <span class="cn-name">莲花纹 · 净</span>
+            <span class="en-name">Jìng · Lotus</span>
+          </div>
+        </div>
+        <h3>出淤泥而不染，见于金玉</h3>
+        <p class="desc">莲自淤泥中舒展，历来是清净与新生的隐喻。此系列以糙面玫瑰金塑瓣，配和田玉与淡水珍珠，花心留一点雾面处理，如雨后初晴，不事张扬。</p>
+        <div class="materials">
+          <span>玫瑰金</span><span>和田玉</span><span>珍珠</span>
+        </div>
+        <a class="link-cta" style="--node-color:#9fbfa0" onclick="goTo('contact')">预约鉴赏 <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="collection" id="fang" data-accent="#e2a9a0">
+    <div class="wrap">
+      <div class="col-figure reveal">
+        <div class="figure-frame" style="--node-color:#e2a9a0"></div>
+        <img src="assets/chahua.png" alt="茶花纹 纹样图案" loading="lazy">
+      </div>
+      <div class="col-text reveal">
+        <div class="eyebrow-row">
+          <div class="glyph-badge" style="--node-color:#e2a9a0">芳</div>
+          <div class="names">
+            <span class="cn-name">茶花纹 · 芳</span>
+            <span class="en-name">Fāng · Camellia</span>
+          </div>
+        </div>
+        <h3>隆冬独放，是为芳</h3>
+        <p class="desc">茶花不与百花争春，独在岁末盛放，清代瓷绘与织锦中常以其喻坚韧。此系列以花丝金勾边，缀珊瑚与贝母，层叠如初雪压枝，暖色藏在冷季里。</p>
+        <div class="materials">
+          <span>花丝金</span><span>珊瑚</span><span>贝母</span>
+        </div>
+        <a class="link-cta" style="--node-color:#e2a9a0" onclick="goTo('contact')">预约鉴赏 <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="collection flip" id="ning" data-accent="#8fb6dd">
+    <div class="wrap">
+      <div class="col-figure reveal">
+        <div class="figure-frame" style="--node-color:#8fb6dd"></div>
+        <img src="assets/bingjing.png" alt="冰晶纹 纹样图案" loading="lazy">
+      </div>
+      <div class="col-text reveal">
+        <div class="eyebrow-row">
+          <div class="glyph-badge" style="--node-color:#8fb6dd">凝</div>
+          <div class="names">
+            <span class="cn-name">冰晶纹 · 凝</span>
+            <span class="en-name">Níng · Ice Crystal</span>
+          </div>
+        </div>
+        <h3>裂而不碎，是为凝</h3>
+        <p class="desc">取意宋瓷冰裂釉，纹路裂而不散，是克制之美的极致。此系列以铂金勾勒裂痕走向，海蓝宝石与钻石嵌于纹隙之间，如寒潭映光，冷中带静。</p>
+        <div class="materials">
+          <span>铂金</span><span>海蓝宝石</span><span>钻石</span>
+        </div>
+        <a class="link-cta" style="--node-color:#8fb6dd" onclick="goTo('contact')">预约鉴赏 <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="collection" id="zhui" data-accent="#5fa695">
+    <div class="wrap">
+      <div class="col-figure reveal">
+        <div class="figure-frame" style="--node-color:#5fa695"></div>
+        <img src="assets/yingluo.png" alt="缨络纹 纹样图案" loading="lazy">
+      </div>
+      <div class="col-text reveal">
+        <div class="eyebrow-row">
+          <div class="glyph-badge" style="--node-color:#5fa695">缀</div>
+          <div class="names">
+            <span class="cn-name">缨络纹 · 缀</span>
+            <span class="en-name">Zhuì · Tassel</span>
+          </div>
+        </div>
+        <h3>垂坠成串，是为缀</h3>
+        <p class="desc">璎珞原为造像与礼服前的垂坠珠饰，一串一坠皆有节奏。此系列复原其垂坠结构，以足金作骨，缀绿松石与南红玛瑙，行走间自成声响。</p>
+        <div class="materials">
+          <span>足金</span><span>绿松石</span><span>南红玛瑙</span>
+        </div>
+        <a class="link-cta" style="--node-color:#5fa695" onclick="goTo('contact')">预约鉴赏 <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ================= ATELIER ================= -->
+<section id="atelier">
+  <div class="wrap">
+    <div class="eyebrow lat reveal">Visit · 藏廊</div>
+    <h2 class="reveal">五纹，只在藏廊相见</h2>
+    <p class="lede reveal">纹曜的作品不做批量陈列，每一件均需预约鉴赏。藏廊由原竹木格窗改造而成，五纹分厅陈设，光线随时辰变化落在展台之上。</p>
+
+    <div class="atelier-grid reveal">
+      <div>
+        <div class="label">地址 Address</div>
+        <div class="value">上海市静安区<br>南京西路 1266 号</div>
+      </div>
+      <div>
+        <div class="label">开放时间 Hours</div>
+        <div class="value">周二至周日<br>11:00 – 19:00（周一闭馆）</div>
+      </div>
+      <div>
+        <div class="label">预约方式 Booking</div>
+        <div class="value">仅接受专属预约<br>建议提前 3 个工作日</div>
+      </div>
+    </div>
+
+    <div class="cta-row reveal" id="contact" style="justify-content:center;">
+      <a class="btn solid" href="mailto:atelier@wenyao.example">预约拜访</a>
+      <a class="btn ghost" href="tel:+862112345678">+86 21 1234 5678</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="brandmark">纹曜</div>
+        <div class="tagline">以纹为骨，以曜为光。<br>五种纹样，五种性格，铸于金石之间。</div>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <div class="label">五纹</div>
+          <a onclick="goTo('yan')">焱 · 火焰纹</a>
+          <a onclick="goTo('jing')">净 · 莲花纹</a>
+          <a onclick="goTo('fang')">芳 · 茶花纹</a>
+          <a onclick="goTo('ning')">凝 · 冰晶纹</a>
+          <a onclick="goTo('zhui')">缀 · 缨络纹</a>
+        </div>
+        <div class="foot-col">
+          <div class="label">关于</div>
+          <a href="#story">造物理念</a>
+          <a href="#atelier">藏廊地址</a>
+          <a href="mailto:atelier@wenyao.example">联系我们</a>
+        </div>
+        <div class="foot-col">
+          <div class="label">关注</div>
+          <span>小红书 @纹曜WENYAO</span>
+          <span>微信公众号 纹曜</span>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 纹曜 WENYAO. 保留所有权利。</span>
+      <span>纹样源自中国传统装饰美学，经当代重新演绎</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // header solid on scroll
+  const header = document.getElementById('siteHeader');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('solid', window.scrollY > 40);
+  }, { passive:true });
+
+  // mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const primaryNav = document.getElementById('primaryNav');
+  navToggle.addEventListener('click', () => {
+    primaryNav.classList.toggle('open');
+  });
+  primaryNav.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => primaryNav.classList.remove('open'));
+  });
+
+  // compass node navigation
+  function goTo(id){
+    const el = document.getElementById(id);
+    if(el){ el.scrollIntoView({ behavior:'smooth', block:'start' }); }
+  }
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold:0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // accent tint tracking per collection section
+  const accentSections = document.querySelectorAll('.collection[data-accent]');
+  const root = document.documentElement;
+  const accentIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting && entry.intersectionRatio > 0.4){
+        root.style.setProperty('--accent', entry.target.dataset.accent);
+      }
+    });
+  }, { threshold:[0.4] });
+  accentSections.forEach(s => accentIO.observe(s));
+</script>
+
+</body>
+</html>
